@@ -1,0 +1,13 @@
+{
+  "name": "ai-startup-discovery-platform",
+  "version": "1.0.0",
+  "description": "AI Assisted Open Source Startup Discovery Platform - Reddit-style social platform",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js"
+  },
+  "keywords": ["startup", "discovery", "reddit-style", "mongodb", "express"],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard – LaunchPad</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="nav-brand">LaunchPad</a>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/discover.html">Discover</a>
+      <a href="/leaderboard.html">Leaderboard</a>
+      <a href="/login.html" id="navLogin">Login</a>
+      <a href="/register.html" id="navRegister">Register</a>
+      <a href="/dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
+      <button type="button" id="navLogout" style="display:none;">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="section-title">Leaderboard</h1>
+    <div class="tabs">
+      <button type="button" class="tab active" data-sort="funds">By funds raised</button>
+      <button type="button" class="tab" data-sort="upvotes">Most upvoted</button>
+      <button type="button" class="tab" data-sort="discussed">Most discussed</button>
+    </div>
+    <div class="cards-grid" id="leaderboardGrid">
+      <p class="empty-state">Loading...</p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    LaunchPad – Discover Startups
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    (function () {
+      app.checkAuth();
+      var currentSort = 'funds';
+
+      function load() {
+        api.getLeaderboard(currentSort).then(function (r) {
+          var el = document.getElementById('leaderboardGrid');
+          if (!r.data || r.data.length === 0) {
+            el.innerHTML = '<p class="empty-state">No startups yet.</p>';
+            return;
+          }
+          el.innerHTML = r.data.map(function (s) { return app.renderStartupCard(s); }).join('');
+          app.attachCardListeners(el);
+        }).catch(function () {
+          document.getElementById('leaderboardGrid').innerHTML = '<p class="empty-state">Could not load leaderboard.</p>';
+        });
+      }
+
+      document.querySelectorAll('.tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+          tab.classList.add('active');
+          currentSort = tab.getAttribute('data-sort');
+          load();
+        });
+      });
+
+      load();
+    })();
+  </script>
+</body>
+</html>
