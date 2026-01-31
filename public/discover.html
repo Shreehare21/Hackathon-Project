@@ -1,87 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Discover – LaunchPad</title>
-  <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover – LaunchPad</title>
+    <link rel="stylesheet" href="/dist/css/style.min.css">
 </head>
+
 <body>
-  <nav class="nav">
-    <a href="/" class="nav-brand">LaunchPad</a>
-    <div class="nav-links" id="navLinks">
-      <a href="/">Home</a>
-      <a href="/discover.html">Discover</a>
-      <a href="/leaderboard.html">Leaderboard</a>
-      <a href="/login.html" id="navLogin">Login</a>
-      <a href="/register.html" id="navRegister">Register</a>
-      <a href="/dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
-      <button type="button" id="navLogout" style="display:none;">Logout</button>
+    <a class="skip-link" href="#discoverGrid">Skip to content</a>
+    <nav class="nav" role="navigation">
+        <a href="/" class="nav-brand">LaunchPad</a>
+        <button class="nav-toggle" id="navToggle" aria-controls="navLinks" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="/">Home</a>
+            <a href="/discover.html">Discover</a>
+            <a href="/leaderboard.html">Leaderboard</a>
+            <a href="/login.html" id="navLogin">Login</a>
+            <a href="/register.html" id="navRegister">Register</a>
+            <a href="/dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
+            <button type="button" id="navLogout" style="display:none;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="section-title">Discover Startups</h1>
+        <div class="tabs">
+            <button type="button" class="tab active" data-sort="newest">Newest</button>
+            <button type="button" class="tab" data-sort="funds">Most funded</button>
+            <button type="button" class="tab" data-sort="upvotes">Most upvoted</button>
+            <button type="button" class="tab" data-sort="discussed">Most discussed</button>
+        </div>
+        <div class="form-group" style="max-width:320px;margin-bottom:1rem;">
+            <label for="search">Search</label>
+            <input type="text" id="search" placeholder="Search startups...">
+        </div>
+        <div class="cards-grid" id="discoverGrid">
+            <p class="empty-state">Loading...</p>
+        </div>
     </div>
-  </nav>
 
-  <div class="container">
-    <h1 class="section-title">Discover Startups</h1>
-    <div class="tabs">
-      <button type="button" class="tab active" data-sort="newest">Newest</button>
-      <button type="button" class="tab" data-sort="funds">Most funded</button>
-      <button type="button" class="tab" data-sort="upvotes">Most upvoted</button>
-      <button type="button" class="tab" data-sort="discussed">Most discussed</button>
-    </div>
-    <div class="form-group" style="max-width:320px;margin-bottom:1rem;">
-      <label for="search">Search</label>
-      <input type="text" id="search" placeholder="Search startups...">
-    </div>
-    <div class="cards-grid" id="discoverGrid">
-      <p class="empty-state">Loading...</p>
-    </div>
-  </div>
+    <footer class="footer">
+        LaunchPad – Discover Startups
+    </footer>
 
-  <footer class="footer">
-    LaunchPad – Discover Startups
-  </footer>
-
-  <script src="/js/api.js"></script>
-  <script src="/js/app.js"></script>
-  <script>
-    (function () {
-      app.checkAuth();
-      var currentSort = 'newest';
-      var currentSearch = '';
-
-      function load() {
-        var params = { sort: currentSort };
-        if (currentSearch) params.search = currentSearch;
-        api.getStartups(params).then(function (r) {
-          console.log('Startups loaded:', r);
-          var el = document.getElementById('discoverGrid');
-          if (!r.success || !r.data || r.data.length === 0) {
-            el.innerHTML = '<p class="empty-state">No startups match.</p>';
-            return;
-          }
-          el.innerHTML = r.data.map(function (s) { return app.renderStartupCard(s); }).join('');
-          app.attachCardListeners(el);
-        }).catch(function (err) {
-          console.error('Error loading startups:', err);
-          document.getElementById('discoverGrid').innerHTML = '<p class="empty-state">Could not load startups. Check console for errors.</p>';
-        });
-      }
-
-      document.querySelectorAll('.tab').forEach(function (tab) {
-        tab.addEventListener('click', function () {
-          document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
-          tab.classList.add('active');
-          currentSort = tab.getAttribute('data-sort');
-          load();
-        });
-      });
-      document.getElementById('search').addEventListener('input', function () {
-        currentSearch = this.value.trim();
-        load();
-      });
-
-      load();
-    })();
-  </script>
+    <script src="/dist/js/api.js" defer></script>
+    <script src="/dist/js/app.js" defer></script>
+    <script src="/dist/js/boot-discover.js" defer></script>
 </body>
+
 </html>
